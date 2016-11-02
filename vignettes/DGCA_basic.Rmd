@@ -1,0 +1,77 @@
+---
+title: "Basic differential correlation analysis using DGCA"
+author: "Andrew McKenzie, Bin Zhang"
+date compiled: "`r Sys.Date()`"
+date: November 2, 2016
+output: 
+  rmarkdown::html_vignette: 
+    number_sections: no
+    toc: no
+vignette: >
+  %\VignetteIndexEntry{Basic DGCA Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+references:
+- id: darmanis2015
+  title: A survey of human brain transcriptome diversity at the single cell level
+  author:
+  - family: Darmanis
+  given: Spyros 
+  container-title: PNAS
+  volume: 112
+  URL: 'http://dx.doi.org/10.1073/pnas.1507125112'
+  DOI: 10.1073/pnas.1507125112
+  issue: 23
+  page: 7285–7290
+  type: article-journal
+  issued:
+    year: 2015
+    month: 6
+---
+
+This basic vignette shows how to perform the most basic DGCA analysis. To learn how to perform the pipeline step-by-step as well as explore some of the different options available in DGCA, please see the extended vignette in the inst/doc folder of the source package. 
+
+First, we will load the package and read in some example data from single-cell RNA-sequencing data from neurons and oligodendrocytes, generated in Darmanis *et al.* [@darmanis2015], cleaned for this analysis, and put in the data folder. 
+
+```{r, results="hide", warning=FALSE, message=FALSE}
+library(DGCA, quietly = TRUE)
+data(darmanis)
+data(design_mat)
+```
+
+Note that the design matrix is a standard design matrix as used in other packages (e.g., limma, DESEq, MatrixEQTL), and specifies the group indices to be extracted from the original columns. 
+
+To run the full differential correlation analysis and extract all of the top differentially correlated pairs, run this: 
+
+```{r, message = FALSE}
+ddcor_res = ddcorAll(inputMat = darmanis, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"),
+  adjust = "none", nPerm = 0, nPairs = 100)
+head(ddcor_res)
+```
+
+To run the full differential correlation analysis to find the top differentially correlated pairs for one specific gene compared to all of the others, specify one gene for the "splitSet" argument. Here, we specify the gene "RTN4": 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+ddcor_res = ddcorAll(inputMat = darmanis, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"),
+  adjust = "perm", nPerm = 5, splitSet = "RTN4")
+head(ddcor_res)
+```
+
+To plot the differential correlations between RTN4 and its top target, you can use this function: 
+
+```{r, fig.width = 7.5, fig.height = 4, message = FALSE, warning = FALSE}
+plotCors(inputMat = darmanis, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"), geneA = "RTN4", geneB = "COX6A1")
+```
+
+As a convenience function, DGCA also offers users the ability to plot the values of individual genes across conditions. For example, for RTN4: 
+
+```{r, fig.width = 6, fig.height = 5, message = FALSE, warning = FALSE}
+plotVals(inputMat = darmanis, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"), gene = "RTN4") 
+```
+
+**References**
+

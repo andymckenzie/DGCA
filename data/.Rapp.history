@@ -1,0 +1,3 @@
+load("/Users/amckenz/Documents/packages/ddcor/data/ddcor.rda")
+ls()
+str(ddcor)
