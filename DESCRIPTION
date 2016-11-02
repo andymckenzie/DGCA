@@ -8,7 +8,7 @@ Description: Differential correlation analysis on input
     was built with gene expression data in mind, it is applicable to other types of
     genomics data as well, in addition to being potentially applicable to data from other fields
     entirely.
-Version: 1.0.0
+Version: 1.0.1
 Author: Bin Zhang [aut],
     Andrew McKenzie [aut, cre]
 Maintainer: Andrew McKenzie <amckenz@gmail.com>
