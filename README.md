@@ -2,7 +2,7 @@
 
 The goal of DGCA is to calculate differential correlations across conditions.
 
-It simplifies the process of seeing whether two correlations are different without having to rely solely on parametric assumptions by leveraging non-parametric permutation tests.
+It simplifies the process of seeing whether two correlations are different without having to rely solely on parametric assumptions by leveraging non-parametric permutation tests and adjusting the resulting empirical p-values for multiple corrections using the qvalue R package.
 
 It also has several other options including calculating the average differential correlation between groups of genes, gene ontology enrichment analyses of the results, and differential correlation network identification via integration with MEGENA.  
 
@@ -20,9 +20,16 @@ devtools::install_github("andymckenzie/DGCA")
 ```R
 library(DGCA)
 data(darmanis); data(design_mat)
-res = ddcorAll()
 ddcor_res = ddcorAll(inputMat = darmanis, design = design_mat, compare = c("oligodendrocyte", "neuron"))
-head(ddcor_res)
+head(ddcor_res, 3)
+#   Gene1  Gene2 oligodendrocyte_cor oligodendrocyte_pVal neuron_cor neuron_pVal
+# 1 CACYBP   NACA        -0.070261455           0.67509118  0.9567267           0
+# 2 CACYBP    SSB        -0.055290516           0.74162636  0.9578999           0
+# 3 NDUFB9    SSB        -0.009668455           0.95405875  0.9491904           0
+#   zScoreDiff     pValDiff     empPVals pValDiff_adj Classes
+# 1  10.256977 1.100991e-24 1.040991e-05    0.6404514     0/+
+# 2  10.251847 1.161031e-24 1.040991e-05    0.6404514     0/+
+# 3   9.515191 1.813802e-21 2.265685e-05    0.6404514     0/+
 ```
 
 ## More
