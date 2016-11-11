@@ -1,4 +1,4 @@
-#' @title Gene ontology of differential correlation-classified genes
+#' @title Gene ontology of differential correlation-classified genes.
 #' @description Extracts a data frame of the top enriched gene sets in gene ontology databases using the hypergeometric test for gene synmols that are members of gene pairs in each of the classes specified in the differentially correlated gene pairs input table. Default parameter settings are to take in a result table with HGNC symbols and convert them to Ensembl symbols for gene ontology testing.
 #' @param ddcor_res The table of differential correlations outputted from ddcor. Expected to have pValDiff or pValDiff_adj columns as well as zScoreDiff, Gene1, +/- Classes columns.
 #' @param universe Character vector of gene symbols which should be used as the background in the hypergeomtric test. If using this in the context of a DGCA experiment, this gene list most likely should be the gene set post-filtering, but prior to differential correlation analysis.
@@ -128,8 +128,8 @@ ddcorGO <- function(ddcor_res, universe, pval_gene_thresh = 0.05,
 
 }
 
-#' @title Switches a gene vector to cleaned HGNC symbols
-#' @description Where possible, switches a character vector of gene names to cleaned and updated HGNC symbols
+#' @title Switches a gene vector to cleaned HGNC symbols.
+#' @description Where possible, switches a character vector of gene names to cleaned and updated HGNC symbols.
 #' @param gene_list Character vector of gene names.
 #' @return Character vector of cleaned gene names.
 #' @export
@@ -142,7 +142,7 @@ switchGenesToHGCN <- function(gene_list){
   return(gene_list)
 }
 
-#' @title Find GO enrichment for a gene vector (using GOstats)
+#' @title Find GO enrichment for a gene vector (using GOstats).
 #' @description Given a gene character vector and a universe character vector, which can be either Ensembl or HGNC symbols, find the over-representation enrichment of the gene list relative to the universe in a gene ontology category using the hypergeometric test and the GOstats R package.
 #' @param gene_vector Character vector gene symbols of interest.
 #' @param universe Character vector of gene symbols which should be used as the background in the hypergeomtric test. If using this in the context of a ddcor experiment, this gene list most likely should be the gene set post-filtering, but prior to differential correlation analysis.
@@ -257,7 +257,7 @@ findGOTermEnrichment <- function(gene_vector, universe, pval_GO_cutoff = 1, HGNC
 
 }
 
-#' @title Find groups of differentially correlated gene symbols
+#' @title Find groups of differentially correlated gene symbols. 
 #' @description Takes a table of differentially correlated genes with respect to one gene in the Gene2 column and returns the a list of vectors with unique, non-NA gene symbols for genes in each of the differentially correlated classes.
 #' @param ddcor_res The table of differential correlations outputted from ddcor. Expected to have pValDiff or pValDiff_adj columns as well as zScoreDiff, Gene1, +/- Classes columns.
 #' @param adjusted Logical indicating whether adjusted p-values from the differential correlation table (i.e., column "pValDiff_adj", when adjusted = TRUE) or unadjusted p-values (i.e., column "pValDiff", when adjusted = FALSE) should be used to subset the table into significant and non-significant portions. Default = FALSE

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ddcorGO.R
 \name{switchGenesToHGCN}
 \alias{switchGenesToHGCN}
-\title{Switches a gene vector to cleaned HGNC symbols}
+\title{Switches a gene vector to cleaned HGNC symbols.}
 \usage{
 switchGenesToHGCN(gene_list)
 }
@@ -13,6 +13,6 @@ switchGenesToHGCN(gene_list)
 Character vector of cleaned gene names.
 }
 \description{
-Where possible, switches a character vector of gene names to cleaned and updated HGNC symbols
+Where possible, switches a character vector of gene names to cleaned and updated HGNC symbols.
 }
 

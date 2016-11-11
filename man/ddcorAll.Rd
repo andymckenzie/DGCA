@@ -2,7 +2,7 @@
 % Please edit documentation in R/ddcorAll.R
 \name{ddcorAll}
 \alias{ddcorAll}
-\title{Calls the DGCA pairwise pipeline}
+\title{Calls the DGCA pairwise pipeline.}
 \usage{
 ddcorAll(inputMat, design, compare, inputMatB = NULL, splitSet = NULL,
   impute = FALSE, corrType = "pearson", nPairs = "all",
@@ -76,5 +76,10 @@ Typically, the returned object is a data frame of the table of differential corr
 }
 \description{
 Runs the full discovery of differential correlation (ddcor) section for comparing pairwise correlations across conditions in the Differential Gene Correlation Analysis (DGCA) package.
+}
+\examples{
+data(darmanis); data(design_mat); darmanis_subset = darmanis[1:30, ]
+ddcor_res = ddcorAll(inputMat = darmanis_subset, design = design_mat,
+	compare = c("oligodendrocyte", "neuron"))
 }
 

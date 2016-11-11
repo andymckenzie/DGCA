@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotGOOnegroup.R
 \name{plotGOOneGroup}
 \alias{plotGOOneGroup}
-\title{Plot results from a hypergeometric enrichment test for one condition}
+\title{Plot results from a hypergeometric enrichment test for one condition.}
 \usage{
 plotGOOneGroup(dfList, nTerms = 5, minSize = 50, maxSize = 500,
   dataCol = "Pvalue", namesCol = "Term", labelsCol = "Ontology",

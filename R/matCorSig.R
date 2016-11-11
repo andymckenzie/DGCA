@@ -1,4 +1,4 @@
-#' @title Calculate correlation matrix p-values
+#' @title Calculate correlation matrix p-values.
 #' @description Calculate two-sided p-values from a pairwise correlations matrix and a corresponding "number of samples" matrix.
 #' @param corrs Computed correlation matrix.
 #' @param nsamp Computed number of samples used per call in the correlation matrix.

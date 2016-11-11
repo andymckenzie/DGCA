@@ -1,4 +1,4 @@
-#' @title Plot results from a hypergeometric enrichment test to compare two conditions
+#' @title Plot results from a hypergeometric enrichment test to compare two conditions.
 #' @description Uses plotrix to create a pyramid plot of the odds-ratios from enrichment tests of GO terms derived from differentially correlated gene sets (or any gene sets inputted into upstream functions) in two conditions. Note that the first column of each data frame is removed to allow for row binding, and otherwise the column names should match.
 #' @param dfList1 A named list of data frames corresponding to different GO term enrichments from the first condition or differential correlation class.
 #' @param dfList2 A named list of data frames corresponding to different GO term enrichments from the second condition or differential correlation class.

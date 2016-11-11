@@ -2,7 +2,7 @@
 % Please edit documentation in R/permQValue.R
 \name{permQValue}
 \alias{permQValue}
-\title{Calculate q-values based on permutation-based empirical null statistics}
+\title{Calculate q-values from DGCA class objects based on permutation-based empirical null statistics.}
 \usage{
 permQValue(dcObject, permObject, secondMat, testSlot, verbose = FALSE,
   plotFdr = FALSE)

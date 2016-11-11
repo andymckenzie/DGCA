@@ -1,4 +1,4 @@
-#' @title Plot results from a hypergeometric enrichment test for one condition
+#' @title Plot results from a hypergeometric enrichment test for one condition.
 #' @description Uses ggplot2 to create a horizontal bar plot of the p-values (or odds-ratios) from enrichment tests of GO terms derived from differentially correlated gene sets (or any gene sets inputted into upstream functions). Note that the first column of each data frame is removed to allow for row binding, and otherwise the column names should match.
 #' @param dfList A named list of data frames corresponding to different GO term enrichments.
 #' @param nTerms The number of most-enriched terms to plot from each GO term type.

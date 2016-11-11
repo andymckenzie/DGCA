@@ -6,6 +6,10 @@
 #' @references Please see ?qvalue::empPVals for more; from which this function was adapted.
 #' @return A vector of p-values adjusted for the null statistics calculated, to be used as an input to the qvalue function.
 #' @author John Storey, Andrew McKenzie
+#' @examples
+#' test_stat = rnorm(100, 1, 1)
+#' test_stat0 = rnorm(1000, 0, 1)
+#' emp_pvals = bigEmpPVals(test_stat, test_stat0)
 #' @export
 bigEmpPVals <- function(stat, stat0, increasing = TRUE){
 

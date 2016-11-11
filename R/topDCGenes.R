@@ -1,4 +1,4 @@
-#' @title Ranks genes by their total number of differentially correlated gene pairs
+#' @title Ranks genes by their total number of differentially correlated gene pairs.
 #' @description Returns list of lists for the top differentially correlated gene pairs in each direction and/or class.
 #' @param ddcor_res The table of differential correlations outputted from ddcor. Expected to have pValDiff or pValDiff_adj columns as well as zScoreDiff, Gene1, +/- Classes columns.
 #' @param pval_gene_thresh p-value threshold to call a gene as having significant differential correlation or not.
@@ -7,6 +7,11 @@
 #' @param nGenes Number of genes to display in the resulting table. Default = "all", but also can be restricted to a particular number.
 #' @param classes Gets the number of differentially correlated gene pairs associated with each of the differential correlation classes.
 #' @return A data frame with corresponding lists of genes most associated with each of the directions and/or correlation classes.
+#' @examples
+#' data(darmanis); data(design_mat); darmanis_subset = darmanis[1:30, ]
+#' ddcor_res = ddcorAll(inputMat = darmanis_subset, design = design_mat,
+#'  compare = c("oligodendrocyte", "neuron"))
+#' top_genes = topDCGenes(ddcor_res)
 #' @export
 topDCGenes <- function(ddcor_res, adjusted = FALSE, pval_gene_thresh = 0.05,
   geneNameCol = c("Gene1", "Gene2"), nGenes = "all", classes = TRUE){

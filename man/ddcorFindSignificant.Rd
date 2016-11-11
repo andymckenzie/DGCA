@@ -2,7 +2,7 @@
 % Please edit documentation in R/ddcorGO.R
 \name{ddcorFindSignificant}
 \alias{ddcorFindSignificant}
-\title{Find groups of differentially correlated gene symbols}
+\title{Find groups of differentially correlated gene symbols.}
 \usage{
 ddcorFindSignificant(ddcor_res, pval_gene_thresh = 0.05, adjusted = FALSE,
   classes = FALSE, geneNameCol = c("Gene1", "Gene2"),

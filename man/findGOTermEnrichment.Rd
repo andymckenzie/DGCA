@@ -2,7 +2,7 @@
 % Please edit documentation in R/ddcorGO.R
 \name{findGOTermEnrichment}
 \alias{findGOTermEnrichment}
-\title{Find GO enrichment for a gene vector (using GOstats)}
+\title{Find GO enrichment for a gene vector (using GOstats).}
 \usage{
 findGOTermEnrichment(gene_vector, universe, pval_GO_cutoff = 1,
   HGNC_switch = TRUE, HGNC_clean = TRUE, gene_ontology = "all",

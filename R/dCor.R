@@ -7,6 +7,10 @@
 #' @param corrType The correlation type of the analysis, limited to "pearson" or "spearman".
 #' @references Tests For Rank Correlation Coefficients, I. http://biomet.oxfordjournals.org/content/44/3-4/470.full.pdf+html
 #' @return Numeric vector with scaled difference in z-scores of correlations between the two conditions.
+#' @examples
+#' rho1 = runif(100, -1, 1); rho2 = runif(100, -1, 1)
+#' n1 = rep(100, 100); n2 = rep(110, 100)
+#' dcorrs_res = dCorrs(rho1, n1, rho2, n2)
 #' @export
 dCorrs <- function(rho1, n1, rho2, n2, corrType = "pearson"){
 

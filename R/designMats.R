@@ -5,6 +5,10 @@
 #' @param design Standard design matrix, must specify at least two conditions. For more info, see ?model.matrix
 #' @param secondMat Logical value indicating whether there is a second input matrix to be subsetted.
 #' @return A list whose first element is a list of subsetted matrices and whose second element is a list of group names.
+#' @examples
+#' data(darmanis); data(design_mat); darmanis_subset = darmanis[1:30, ]
+#' groups_from_design = getGroupsFromDesign(inputMat = darmanis_subset, design = design_mat)
+#' str(groups_from_design)
 #' @export
 getGroupsFromDesign <- function(inputMat, design, inputMatB = NULL, secondMat = FALSE){
 

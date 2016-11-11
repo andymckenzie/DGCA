@@ -24,4 +24,8 @@ A corMats S4 class object, containing a list of matrices from each group, the de
 \description{
 As a first step in the standard DGCA workflow, this function reads in a design matrix and an input matrix, splits the input matrix by the named groups defined in the design matrix, and outputs a list of matrices (correlation matrix, correlation significance matrix, and number of samples matrix) to be used by downstream parts of the analysis.
 }
+\examples{
+data(darmanis); data(design_mat); darmanis_subset = darmanis[1:30, ]
+cors_res = getCors(inputMat = darmanis_subset, design = design_mat)
+}
 

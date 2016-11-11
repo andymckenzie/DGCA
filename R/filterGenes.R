@@ -11,6 +11,14 @@
 #' @param allGroups Logical for whether genes need to pass the filter in all of the groups specified in the design matrix.
 #' @param design A standard model.matrix created design matrix. Rows correspond to samples and colnames refer to the names of the conditions that you are interested in analyzing. Only 0's or 1's are allowed in the design matrix. Please see vignettes for more information.
 #' @return A filtered matrix.
+#' @examples
+#' data(darmanis); data(design_mat); darmanis_subset = darmanis[1:30, ]
+#' filtered_mat = filterGenes(inputMat = darmanis_subset, filterTypes = "central")
+#' filtered_mat_both = filterGenes(inputMat = darmanis_subset,
+#'  filterTypes = c("central", "dispersion"), filterCentralType = "mean",
+#'  filterDispersionPercentile = 0.1)
+#' filtered_mat_all_groups = filterGenes(inputMat = darmanis_subset,
+#'  design = design_mat, filterTypes = "dispersion", allGroups = TRUE)
 #' @export
 filterGenes <- function(inputMat, filterTypes = "central",
   keepRows = NULL, filterCentralType = "median",

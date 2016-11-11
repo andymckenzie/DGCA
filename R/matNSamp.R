@@ -5,6 +5,10 @@
 #' @param matB Optional input data matrix with which the comparison with matA will be made.
 #' @param secondMat Logical indicator of whether there is a second matrix in the comparison or not.
 #' @return A number of samples (nsamp) matrix.
+#' data(darmanis); darmanis_subset = as.matrix(darmanis[1:30, ])
+#' nsamp_res = matNSamp(darmanis_subset)
+#' darmanis_subset[1, 1] = NA
+#' nsamp_res_na = matNSamp(darmanis_subset)
 #' @export
 matNSamp <- function(matA, impute = FALSE, matB = NULL, secondMat = FALSE){
 

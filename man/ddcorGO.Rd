@@ -2,7 +2,7 @@
 % Please edit documentation in R/ddcorGO.R
 \name{ddcorGO}
 \alias{ddcorGO}
-\title{Gene ontology of differential correlation-classified genes}
+\title{Gene ontology of differential correlation-classified genes.}
 \usage{
 ddcorGO(ddcor_res, universe, pval_gene_thresh = 0.05, classes = FALSE,
   geneNameCol = c("Gene1", "Gene2"), pval_GO_cutoff = 1,

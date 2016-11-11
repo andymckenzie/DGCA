@@ -2,7 +2,7 @@
 % Please edit documentation in R/getDCorPerm.R
 \name{getDCorPerm}
 \alias{getDCorPerm}
-\title{Get permuted groupwise correlations and pairwise differential correlations}
+\title{Get permuted groupwise correlations and pairwise differential correlations.}
 \usage{
 getDCorPerm(inputMat, design, compare, inputMatB = NULL, impute = FALSE,
   nPerms = 10, corrType = "pearson", corr_cutoff = 0.99,

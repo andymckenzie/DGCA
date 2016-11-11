@@ -2,10 +2,10 @@
 % Please edit documentation in R/dCorClass.R
 \name{dCorClass}
 \alias{dCorClass}
-\title{Classify differential correlations}
+\title{Classify differential correlations.}
 \usage{
 dCorClass(corsA, pvalsA, corsB, pvalsB, dCorPVals, sigThresh = 1,
-  corSigThresh = 0.05)
+  corSigThresh = 0.05, convertClasses = FALSE)
 }
 \arguments{
 \item{corsA}{Numeric vector of correlations between gene pairs in condition A.}
@@ -21,11 +21,19 @@ dCorClass(corsA, pvalsA, corsB, pvalsB, dCorPVals, sigThresh = 1,
 \item{sigThresh}{If classify = TRUE, this numeric value specifies the p-value threshold at which a differential correlation p-value is deemed significant for differential correlation class calculation. Default = 1, as investigators may use different cutoff thresholds; however, this can be lowered to establish significant classes as desired.}
 
 \item{corSigThresh}{Threshold at which the correlation p-values must be below in order to be called "significant". Default = 0.05.}
+
+\item{convertClasses}{Logical indicating whether the returned classes should be in numeric (factor) format or character format indicating the "actual" class.}
 }
 \value{
 A numeric vector of classes derived from each of the input vectors.
 }
 \description{
 Classifies identifiers (e.g., genes) into one of the different categories pairwise-differential correlation classes. These categories are one of the Cartesian products of "Up Correlation", "No Correlation", and "Down Correlation" in each of the conditions, as well as a category for "no significant differential correlation".
+}
+\examples{
+rho1 = runif(100, -1, 1); rho2 = runif(100, -1, 1)
+pvalsA = runif(100, 0, 1); pvalsB = runif(100, 0, 1); dcor_pvals = runif(100, 0, 1)
+cor_classes = dCorClass(rho1, pvalsA, rho2, pvalsB, dcor_pvals)
+cor_classes = dCorClass(rho1, pvalsA, rho2, pvalsB, dcor_pvals, convertClasses = TRUE)
 }
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/pairwiseDCor.R
 \name{pairwiseDCor}
 \alias{pairwiseDCor}
-\title{Calculate pairwise differential correlations}
+\title{Calculate pairwise differential correlations.}
 \usage{
 pairwiseDCor(corMatsObj, compare, corr_cutoff = 0.99, corrType = "pearson",
   secondMat = FALSE, signType = "none")

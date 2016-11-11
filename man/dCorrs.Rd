@@ -23,6 +23,11 @@ Numeric vector with scaled difference in z-scores of correlations between the tw
 \description{
 Z-transforms correlation coefficients (Pearson or Spearman) and then calculates the difference in z-scores between the two conditions divided by the square root of the standard errors (which is inversely proportion to the sample sizes used to calculate the correlations).
 }
+\examples{
+rho1 = runif(100, -1, 1); rho2 = runif(100, -1, 1)
+n1 = rep(100, 100); n2 = rep(110, 100)
+dcorrs_res = dCorrs(rho1, n1, rho2, n2)
+}
 \references{
 Tests For Rank Correlation Coefficients, I. http://biomet.oxfordjournals.org/content/44/3-4/470.full.pdf+html
 }

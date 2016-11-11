@@ -33,6 +33,6 @@ moduleGO(genes, labels, universe, HGNC_clean = TRUE, HGNC_switch = TRUE,
 A list of lists of df's, one corresponding to each module, containing GO enrichment information for each module in each of the GO categories selected.
 }
 \description{
-Takes an input matrix including both genes and at least one trait and modules of genes (possibly overlapping) and calculates the change in correlation for the trait among those genes between two conditions.
+Takes input vectors of gene symbols, labels of corresponding modules, and a universe gene set and leverages the GOstats package to perform GO enrichment analysis.
 }
 

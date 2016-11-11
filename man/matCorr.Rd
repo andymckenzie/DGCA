@@ -20,6 +20,8 @@ matCorr(matA, corrType, use = "pairwise.complete.obs", matB = NULL,
 }
 \value{
 A correlation matrix.
+data(darmanis); darmanis_subset = darmanis[1:30, ]
+matcor_res = matCorr(matA = darmanis_subset, corrType = "pearson")
 }
 \description{
 This function takes one or two input matrices and calculates a correlation matrix from it using the speed-optimized correlation function from WGCNA.

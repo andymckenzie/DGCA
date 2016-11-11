@@ -19,6 +19,11 @@ A vector of p-values adjusted for the null statistics calculated, to be used as 
 \description{
 A reimplementation of qvalue::empPvals designed to work faster and require less memory in the average case. Unlike qvalue::empPvals, *requires* the use of a reference pool distribution rather than having this as an option. Another difference of this function that the original is that it handles ties for test statistics equal to 0, to handle cases where test statistics are thresholded and may be zero more commonly than expected by chance (i.e., very rarely).
 }
+\examples{
+test_stat = rnorm(100, 1, 1)
+test_stat0 = rnorm(1000, 0, 1)
+emp_pvals = bigEmpPVals(test_stat, test_stat0)
+}
 \author{
 John Storey, Andrew McKenzie
 }

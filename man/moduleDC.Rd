@@ -42,4 +42,14 @@ A data frame with the module labels, the average change in difference in z-score
 \description{
 Takes modules of genes (possibly overlapping) and calculates the change in correlation among those genes between two conditions. Also reports the genes with the strongest gain in connectivity (i.e., average difference in z-score of > 0) and the strongest loss of correlation between conditions for each module, if any pass the significance measure specified.
 }
+\examples{
+data(darmanis)
+module_genes = list(mod1 = rownames(darmanis)[1:100],
+ mod2 = rownames(darmanis)[90:190], mod3 = rownames(darmanis)[190:290])
+modules = stack(module_genes)
+modules$ind = as.character(modules$ind)
+moduleDC_res = moduleDC(inputMat = darmanis, design = design_mat,
+ compare = c("oligodendrocyte", "neuron"), genes = modules$values,
+ labels = modules$ind)
+}
 

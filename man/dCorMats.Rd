@@ -2,7 +2,7 @@
 % Please edit documentation in R/dCorMats.R
 \name{dCorMats}
 \alias{dCorMats}
-\title{Finds differential correlations between matrices}
+\title{Finds differential correlations between matrices.}
 \usage{
 dCorMats(matA, nmatA, matB, nmatB, corr_cutoff = 0.99, corrType = "pearson",
   secondMat = FALSE, signType = "none")

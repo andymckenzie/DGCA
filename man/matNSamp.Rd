@@ -17,6 +17,10 @@ matNSamp(matA, impute = FALSE, matB = NULL, secondMat = FALSE)
 }
 \value{
 A number of samples (nsamp) matrix.
+data(darmanis); darmanis_subset = as.matrix(darmanis[1:30, ])
+nsamp_res = matNSamp(darmanis_subset)
+darmanis_subset[1, 1] = NA
+nsamp_res_na = matNSamp(darmanis_subset)
 }
 \description{
 This function calculates the pairwise number of non-missing values in a matrix.

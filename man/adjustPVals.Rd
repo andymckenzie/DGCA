@@ -21,4 +21,9 @@ A numeric vector of p-values that have been adjusted according to the specified 
 \description{
 Wraps around the R base implementation of p.adjust, as well as the methods used in the fdr tool package.
 }
+\examples{
+pvals = runif(100, 0, 1)
+adj_pvals_bh = adjustPVals(pvals, adjust = "BH")
+adj_pvals_hommel = adjustPVals(pvals, adjust = "hommel")
+}
 

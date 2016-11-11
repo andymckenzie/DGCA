@@ -6,6 +6,9 @@
 #' @param design A standard model.matrix created design matrix. Rows correspond to samples and colnames refer to the names of the conditions that you are interested in analyzing. Only 0's or 1's are allowed in the design matrix. Please see vignettes for more information.
 #' @param corrType The correlation type of the analysis, limited to "pearson" or "spearman". Default = "pearson".
 #' @return A corMats S4 class object, containing a list of matrices from each group, the design matrix, and a character vector of options.
+#' @examples
+#' data(darmanis); data(design_mat); darmanis_subset = darmanis[1:30, ]
+#' cors_res = getCors(inputMat = darmanis_subset, design = design_mat)
 #' @export
 getCors <- function(inputMat, design, inputMatB = NULL, impute = FALSE, corrType = "pearson"){
 

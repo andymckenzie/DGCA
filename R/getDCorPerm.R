@@ -1,4 +1,4 @@
-#' @title Get permuted groupwise correlations and pairwise differential correlations
+#' @title Get permuted groupwise correlations and pairwise differential correlations. 
 #' @description Takes input and methods and randomly permutes the data to do getCor as well as group-specific pairwiseDCor.
 #' @param inputMat The matrix (or data.frame) of values (e.g., gene expression values from an RNA-seq or microarray study) that you are interested in analyzing. The rownames of this matrix should correspond to the identifiers whose correlations and differential correlations you are interested in analyzing, while the columns should correspond to the rows of the design matrix and should be separable into your groups.
 #' @param inputMatB Optional, secondary input matrix that allows you to calculate correlation and differential correlation for the rows between inputMat and imputMatB.

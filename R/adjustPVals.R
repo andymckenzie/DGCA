@@ -5,6 +5,10 @@
 #' @param plotFdr Allows for plotting of fdrtool p-value adjustment result, if this is chosen. Requires fdrtool package. Default = FALSE.
 #' @param verbose If TRUE, the function prints out the general method used for multiple correction analysis. Default = FALSE.
 #' @return A numeric vector of p-values that have been adjusted according to the specified method.
+#' @examples
+#' pvals = runif(100, 0, 1)
+#' adj_pvals_bh = adjustPVals(pvals, adjust = "BH")
+#' adj_pvals_hommel = adjustPVals(pvals, adjust = "hommel")
 #' @export
 adjustPVals <- function(pVals, adjust = "none", plotFdr = FALSE,
 	verbose = FALSE){

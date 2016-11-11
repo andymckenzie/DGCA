@@ -1,4 +1,4 @@
-#' @title Calculate pairwise differential correlations
+#' @title Calculate pairwise differential correlations.
 #' @description Find the differential correlation between two conditions.
 #' @param corMatsObj A class object containing a named list of lists of matrices, one list per condition, with each list containing a correlation matrix, a correlation significance p-values matrix, and a "number of samples used to calculate the correlation" matrix.
 #' @param compare Vector of two character strings, each corresponding to one name in the list of correlation matrices that should be compared.

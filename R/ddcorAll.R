@@ -1,4 +1,4 @@
-#' @title Calls the DGCA pairwise pipeline
+#' @title Calls the DGCA pairwise pipeline.
 #' @description Runs the full discovery of differential correlation (ddcor) section for comparing pairwise correlations across conditions in the Differential Gene Correlation Analysis (DGCA) package.
 #' @param inputMat The matrix (or data.frame) of values (e.g., gene expression values from an RNA-seq or microarray study) that you are interested in analyzing. The rownames of this matrix should correspond to the identifiers whose correlations and differential correlations you are interested in analyzing, while the columns should correspond to the rows of the design matrix and should be separable into your groups.
 #' @param design A standard model.matrix created design matrix. Rows correspond to samples and colnames refer to the names of the conditions that you are interested in analyzing. Only 0's or 1's are allowed in the design matrix. Please see vignettes for more information.
@@ -29,6 +29,10 @@
 #' @param oneSidedPVal If the dCorAvgType test is total_average, this option specifies whether a one-sided p-value should be reported, as opposed to a two-sided p-value. That is, if the average difference of z-scores is greater than zero, test whether the permutation average difference of z-scores are less than that average to get the p-value, and vice versa for the case that the average difference of z-scores is less than 0. Otherwise, test whether the absolute value of the average difference in z-scores is greater than the absolute values of the permutation average difference in z-scores. Default = FALSE.
 #' @param ... Additional plotting arguments if heatmapPlot = TRUE.
 #' @return Typically, the returned object is a data frame of the table of differential correlations between conditions. In the case that dCorAvg is calculated, the returned object is instead a list containing that table as well as the object summarizing the difference in average correlation for the specified portion of the data set.
+#' @examples
+#' data(darmanis); data(design_mat); darmanis_subset = darmanis[1:30, ]
+#' ddcor_res = ddcorAll(inputMat = darmanis_subset, design = design_mat,
+#' 	compare = c("oligodendrocyte", "neuron"))
 #' @export
 ddcorAll <- function(inputMat, design, compare, inputMatB = NULL, splitSet = NULL,
 	impute = FALSE, corrType = "pearson", nPairs = "all", sortBy = "zScoreDiff",

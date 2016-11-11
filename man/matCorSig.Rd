@@ -2,7 +2,7 @@
 % Please edit documentation in R/matCorSig.R
 \name{matCorSig}
 \alias{matCorSig}
-\title{Calculate correlation matrix p-values}
+\title{Calculate correlation matrix p-values.}
 \usage{
 matCorSig(corrs, nsamp, secondMat = FALSE)
 }

@@ -36,4 +36,13 @@ A filtered matrix.
 \description{
 Filter out rows in an input matrix that are not above a certain percentile with respect to a central tendency and/or dispersion measure. To be used, e.g, prior to differential correlation testing with the function ddcorall.
 }
+\examples{
+data(darmanis); data(design_mat); darmanis_subset = darmanis[1:30, ]
+filtered_mat = filterGenes(inputMat = darmanis_subset, filterTypes = "central")
+filtered_mat_both = filterGenes(inputMat = darmanis_subset,
+ filterTypes = c("central", "dispersion"), filterCentralType = "mean",
+ filterDispersionPercentile = 0.1)
+filtered_mat_all_groups = filterGenes(inputMat = darmanis_subset,
+ design = design_mat, filterTypes = "dispersion", allGroups = TRUE)
+}
 

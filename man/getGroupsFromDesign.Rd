@@ -21,4 +21,9 @@ A list whose first element is a list of subsetted matrices and whose second elem
 \description{
 This function splits the input matrix(es) based on a design matrix, into a named list of subsetted matrices. If the design matrix has no names, this function will create names for the resulting list of matrices.
 }
+\examples{
+data(darmanis); data(design_mat); darmanis_subset = darmanis[1:30, ]
+groups_from_design = getGroupsFromDesign(inputMat = darmanis_subset, design = design_mat)
+str(groups_from_design)
+}
 

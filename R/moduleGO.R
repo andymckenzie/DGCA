@@ -1,5 +1,5 @@
 #' @title Perform module GO-trait correlation
-#' @description Takes an input matrix including both genes and at least one trait and modules of genes (possibly overlapping) and calculates the change in correlation for the trait among those genes between two conditions.
+#' @description Takes input vectors of gene symbols, labels of corresponding modules, and a universe gene set and leverages the GOstats package to perform GO enrichment analysis.
 #' @param genes A character vector specifying gene symbols, present as rows in the inputMat, corresponding to each module label in the labels argument.
 #' @param labels A character vector specifying module label names, one for each gene symbol in the genes argument, with overlap allowed (i.e., each gene can be in more than one module).
 #' @param universe Character vector of gene symbols which should be used as the background in the hypergeomtric test. If using this in the context of a DGCA experiment, this gene list most likely should be the gene set post-filtering, but prior to differential correlation analysis.

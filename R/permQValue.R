@@ -1,4 +1,4 @@
-#' @title Calculate q-values based on permutation-based empirical null statistics
+#' @title Calculate q-values from DGCA class objects based on permutation-based empirical null statistics.
 #' @description First, estimate empirical p-values based on a comparison of the actual and permuted test statistics. Next, estimate the proportion of true null hypotheses using the qvalue package as well as qvalues from the empirical p-values, using this value. If the estimated pi0 <= 0, then sequentially recalculates using increasingly conservative set of lambda values, until lambda = 0.5.
 #' @param dcObject The original S4 class object containing the test statistics to be extracted.
 #' @param permObject The array of matrices containing the null test statistics.

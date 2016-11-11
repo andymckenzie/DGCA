@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotGOTwoGroups.R
 \name{plotGOTwoGroups}
 \alias{plotGOTwoGroups}
-\title{Plot results from a hypergeometric enrichment test to compare two conditions}
+\title{Plot results from a hypergeometric enrichment test to compare two conditions.}
 \usage{
 plotGOTwoGroups(dfList1, dfList2, nTerms = 5, minSize = 40,
   maxSize = 1000, labelsCol = "Ontology", adjustPVals = TRUE,

@@ -14,6 +14,15 @@
 #' @param gene_avg_signif The gene average differential correlation significance (adjusted for MHTC) required in order for the a gene to be reported as having a gain or loss in connectivity.
 #' @param number_DC_genes The number of top differentially correlated genes with more correlation in each condition in each module to return in the data frame.
 #' @return A data frame with the module labels, the average change in difference in z-score between conditions (i.e., one measure of the modular average differential connectivity, or MeDC), and the empirical p-value for the significance of the change in correlation.
+#' @examples
+#' data(darmanis)
+#' module_genes = list(mod1 = rownames(darmanis)[1:100],
+#'  mod2 = rownames(darmanis)[90:190], mod3 = rownames(darmanis)[190:290])
+#' modules = stack(module_genes)
+#' modules$ind = as.character(modules$ind)
+#' moduleDC_res = moduleDC(inputMat = darmanis, design = design_mat,
+#'  compare = c("oligodendrocyte", "neuron"), genes = modules$values,
+#'  labels = modules$ind)
 #' @export
 moduleDC <- function(inputMat, design, compare, genes, labels, corr_cutoff = 0.99, signType = "none",
   corrType = "pearson", nPerms = 50, oneSidedPVal = FALSE, gene_avg_signif = 0.05,

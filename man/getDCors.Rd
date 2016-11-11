@@ -2,7 +2,7 @@
 % Please edit documentation in R/getDCors.R
 \name{getDCors}
 \alias{getDCors}
-\title{Get groupwise correlations and pairwise differential correlations}
+\title{Get groupwise correlations and pairwise differential correlations.}
 \usage{
 getDCors(inputMat, design, compare, inputMatB = NULL, impute = FALSE,
   corrType = "pearson", corr_cutoff = 0.99, signType = "none")
@@ -26,6 +26,8 @@ getDCors(inputMat, design, compare, inputMatB = NULL, impute = FALSE,
 }
 \value{
 A dcPair class object, containing the difference in z-scores for each comparison, the p-values of that differences, and the original correlation matrices and significances for subsequent classification steps.
+data(darmanis); data(design_mat); darmanis_subset = darmanis[1:30, ]
+dcors_res = getDCors(inputMat = darmanis_subset, design = design_mat, compare = c("oligodendrocyte", "neuron"))
 }
 \description{
 Takes input and methods to perform getCor as well as group-specific pairwiseDCor.

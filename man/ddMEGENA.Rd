@@ -2,7 +2,7 @@
 % Please edit documentation in R/ddMEGENA.R
 \name{ddMEGENA}
 \alias{ddMEGENA}
-\title{Integration function to use MEGENA to perform network analyses of DGCA results}
+\title{Integration function to use MEGENA to perform network analyses of DGCA results.}
 \usage{
 ddMEGENA(ddcor_res, adjusted = TRUE, pval_gene_thresh = 0.05,
   evalCompactness = TRUE, nPerm = 100, hubPVal = 0.05,

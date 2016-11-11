@@ -2,7 +2,7 @@
 % Please edit documentation in R/topDCGenes.R
 \name{topDCGenes}
 \alias{topDCGenes}
-\title{Ranks genes by their total number of differentially correlated gene pairs}
+\title{Ranks genes by their total number of differentially correlated gene pairs.}
 \usage{
 topDCGenes(ddcor_res, adjusted = FALSE, pval_gene_thresh = 0.05,
   geneNameCol = c("Gene1", "Gene2"), nGenes = "all", classes = TRUE)
@@ -25,5 +25,11 @@ A data frame with corresponding lists of genes most associated with each of the 
 }
 \description{
 Returns list of lists for the top differentially correlated gene pairs in each direction and/or class.
+}
+\examples{
+data(darmanis); data(design_mat); darmanis_subset = darmanis[1:30, ]
+ddcor_res = ddcorAll(inputMat = darmanis_subset, design = design_mat,
+ compare = c("oligodendrocyte", "neuron"))
+top_genes = topDCGenes(ddcor_res)
 }
 

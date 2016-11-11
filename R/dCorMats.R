@@ -1,4 +1,4 @@
-#' @title Finds differential correlations between matrices
+#' @title Finds differential correlations between matrices. 
 #' @description Takes two corresponding correlation and nsamp matrices and returns matrices for the scaled difference in correlation as well as the p-value of that difference.
 #' @param matA Correlation matrix with numeric entries.
 #' @param nmatA Number of samples (nsamp) matrix with numeric entries, corresponding to the number of samples used for each of the correlations calculated in matA.
