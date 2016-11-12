@@ -41,3 +41,7 @@ There are three vignettes available in order to help you learn how to use the pa
 - DGCA_modules: This will show you how to use the package to perform module-based and network-based analyses.
 
 The second two vignettes can be found in inst/doc.
+
+Material for simulations and networks created from MEGENA can be found here:
+
+- https://github.com/andymckenzie/dgca_manuscript
