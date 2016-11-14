@@ -32,7 +32,7 @@ head(ddcor_res, 3)
 # 3   9.515191 1.813802e-21 2.265685e-05    0.6404514     0/+
 ```
 
-## More
+## Vignettes
 
 There are three vignettes available in order to help you learn how to use the package:
 
@@ -41,6 +41,8 @@ There are three vignettes available in order to help you learn how to use the pa
 - DGCA_modules: This will show you how to use the package to perform module-based and network-based analyses.
 
 The second two vignettes can be found in inst/doc.
+
+## Further Applications
 
 Material for simulations and networks created from MEGENA can be found here:
 
