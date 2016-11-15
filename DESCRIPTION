@@ -1,22 +1,26 @@
 Package: DGCA
 Title: Differential Gene Correlation Analysis
-Description: Differential correlation analysis on input
+Description: Performs differential correlation analysis on input
     matrices, with multiple conditions specified by a design matrix. Contains
     functions to filter, process, save, visualize, and interpret differential
     correlations of identifier-pairs across the entire identifier space, or with
-    respect to a particular set of identifiers (e.g., one). Although the package
+    respect to a particular set of identifiers (e.g., one). Also contains several
+    functions to perform differential correlation analysis on clusters (i.e., modules)
+    or genes. Finally, it contains functions to generate empirical p-values for the
+    hypothesis tests and adjust them for multiple comparisons. Although the package
     was built with gene expression data in mind, it is applicable to other types of
-    genomics data as well, in addition to being potentially applicable to data from other fields
-    entirely.
+    genomics data as well, in addition to being potentially applicable to data from
+    other fields entirely. It is described more fully in the manuscript
+    introducing it, freely available at doi:10.1186/s12918-016-0349-1.
 Version: 1.0.1
 Author: Bin Zhang [aut],
     Andrew McKenzie [aut, cre]
 Maintainer: Andrew McKenzie <amckenz@gmail.com>
 Depends:
     R (>= 3.2)
-Imports: 
-    WGCNA, 
-    matrixStats, 
+Imports:
+    WGCNA,
+    matrixStats,
     methods
 Suggests:
     knitr,
@@ -30,13 +34,13 @@ Suggests:
     HGNChelper,
     org.Hs.eg.db,
     AnnotationDbi,
-    abind, 
+    abind,
     MEGENA,
-    Matrix, 
-    doMC, 
-    igraph, 
-    cowplot, 
-    stats, 
+    Matrix,
+    doMC,
+    igraph,
+    cowplot,
+    stats,
     utils
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

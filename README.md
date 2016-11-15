@@ -1,3 +1,5 @@
+[![Travis-CI Build Status](https://travis-ci.org/andymckenzie/DGCA.svg?branch=master)](https://travis-ci.org/andymckenzie/DGCA)
+
 # DGCA
 
 The goal of DGCA is to calculate differential correlations across conditions.
@@ -42,8 +44,12 @@ There are three vignettes available in order to help you learn how to use the pa
 
 The second two vignettes can be found in inst/doc.
 
-## Further Applications
+## Applications
 
-Material for simulations and networks created from MEGENA can be found here:
+You can view the manuscript describing DGCA in detail as well as several applications here:
+
+- http://bmcsystbiol.biomedcentral.com/articles/10.1186/s12918-016-0349-1
+
+Material for associated simulations and networks created from MEGENA can be found here:
 
 - https://github.com/andymckenzie/dgca_manuscript
