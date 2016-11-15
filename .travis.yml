@@ -4,5 +4,12 @@ language: R
 sudo: false
 cache: packages
 
+bioc_packages:
+  - impute
+  - preprocessCore
+  - GO.db
+  - AnnotationDbi
+
 r_github_packages:
   - cran/survival
+  - cran/WGCNA
