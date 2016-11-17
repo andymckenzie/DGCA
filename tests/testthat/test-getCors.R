@@ -32,18 +32,6 @@ test_that("getCor works", {
 	expect_equal(slot(getCors(nums_mis, design_mat, corrType = "spearman"),
 		"corMatList")[["faca"]]$pvals[1,2], gold_mis_spearman$p.value)
 
-	#must subset prior to imputation to be consistent
-	#need to impute prior to calculating the correlations
-	#impute needs to be in its own section, NOT a part of nsamp
-	imputed = impute::impute.knn(nums_mis)
-	nums_mis_imputed = imputed$data
-	gold_mis_imputed = cor.test(nums_mis_imputed[1,c(6:10)],
-		nums_mis_imputed[2,c(6:10)], use = "pairwise.complete.obs")
-
-	#impute works as expected
-	expect_equal(slot(getCors(nums_mis, design_mat, impute = TRUE),
-		"corMatList")[["facb"]]$pvals[1,2], gold_mis_imputed$p.value)
-
 })
 
 test_that("design matrix works", {
