@@ -35,6 +35,4 @@ test_that("matNSamp works", {
 
 	expect_equal(matNSamp(nums_mis), nsamps_mis)
 
-	expect_equal(matNSamp(nums_mis, impute = TRUE), nsamps)
-
 })

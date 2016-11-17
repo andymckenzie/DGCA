@@ -1,4 +1,5 @@
 [![Travis-CI Build Status](https://travis-ci.org/andymckenzie/DGCA.svg?branch=master)](https://travis-ci.org/andymckenzie/DGCA)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ggplot2)](https://cran.r-project.org/package=DGCA)
 
 # DGCA
 
@@ -10,7 +11,13 @@ It also has several other options including calculating the average differential
 
 ## Installation
 
-You can install DGCA from github with:
+You can install DGCA from CRAN with:
+
+```R
+install.packages("DGCA")
+```
+
+You can install the development version of DGCA from github with:
 
 ```R
 # install.packages("devtools")

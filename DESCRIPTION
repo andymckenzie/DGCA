@@ -11,7 +11,7 @@ Description: Performs differential correlation analysis on input
     was built with gene expression data in mind, it is applicable to other types of
     genomics data as well, in addition to being potentially applicable to data from
     other fields entirely. It is described more fully in the manuscript
-    introducing it, freely available at doi:10.1186/s12918-016-0349-1.
+    introducing it, freely available at <doi:10.1186/s12918-016-0349-1>.
 Version: 1.0.1
 Author: Bin Zhang [aut],
     Andrew McKenzie [aut, cre]
