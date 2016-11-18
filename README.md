@@ -45,9 +45,9 @@ head(ddcor_res, 3)
 
 There are three vignettes available in order to help you learn how to use the package:
 
-- DGCA_basic: This will get you up-and-going quickly.
-- DGCA: This is a more extended version that explains a bit about how the package works and shows several of the options available in the package.
-- DGCA_modules: This will show you how to use the package to perform module-based and network-based analyses.
+- [DGCA Basic](http://htmlpreview.github.io/?https://github.com/andymckenzie/DGCA/blob/master/vignettes/DGCA_basic.html): This will get you going quickly.
+- [DGCA](http://htmlpreview.github.io/?https://github.com/andymckenzie/DGCA/blob/master/inst/doc/DGCA.html): This is a more extended version that explains a bit about how the package works and shows several of the options available in the package.
+- [DGCA Modules](https://github.com/andymckenzie/DGCA/blob/master/inst/doc/DGCA_modules.pdf): This will show you how to use the package to perform module-based and network-based analyses.
 
 The second two vignettes can be found in inst/doc.
 
