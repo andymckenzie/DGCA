@@ -41,8 +41,12 @@ moduleDC <- function(inputMat, design, compare, genes, labels, corr_cutoff = 0.9
   for(i in 1:length(labels_names)){
     message(paste0("Calculating MDC for module #", i, ", which is called ", labels_names[i]))
     genes_tmp = genes[labels == labels_names[i]]
+    genes_tmp = genes_tmp[genes_tmp %in% rownames(inputMat)]
+    if(length(genes_tmp) == 0) next
     module_size[i] = length(genes_tmp)
+    str(genes_tmp)
     inputMat_tmp = inputMat[genes_tmp, ]
+    str(inputMat_tmp)
 
     ddcor_res = ddcorAll(inputMat = inputMat_tmp, design = design, compare = compare,
       corrType = corrType, signType = signType,
