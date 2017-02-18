@@ -1,4 +1,4 @@
-#' @title Integration function to use MEGENA to perform network analyses of DGCA results. 
+#' @title Integration function to use MEGENA to perform network analyses of DGCA results.
 #' @description Takes a table of results from a DGCA analysis and inputs it into the MEGENA package pipeline.
 #' @param ddcor_res The table of differential correlations outputted from ddcor. Expected to have pValDiff or pValDiff_adj columns as well as zScoreDiff, Gene1, +/- Classes columns.
 #' @param pval_gene_thresh p-value threshold to call a gene as having significant differential correlation or not.
@@ -29,7 +29,7 @@ ddMEGENA <- function(ddcor_res, adjusted = TRUE, pval_gene_thresh = 0.05,
   if(!adjusted) {
     ddcor_res_sig = ddcor_res[ddcor_res$pValDiff < pval_gene_thresh, ]
   } else {
-    ddcor_res_sig = ddcor_res[ddcor_res$pValDiffAdj < pval_gene_thresh, ]
+    ddcor_res_sig = ddcor_res[ddcor_res$pValDiff_adj < pval_gene_thresh, ]
   }
 
   if (!requireNamespace("MEGENA", quietly = TRUE)) {
