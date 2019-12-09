@@ -40,8 +40,6 @@ plotVals <- function(inputMat, design, compare, gene,
 
   if(!gene %in% rownames(inputMat)) stop("gene was not found in the rownames of the input matrix.")
 
-  if(!class(inputMat) %in% c("data.frame", "matrix")) stop("Input data should be either data.frame or matrix.\n")
-
   #check the design matrix
   if(!mode(design) == "numeric") stop("Design matrix must be numeric.\n")
 

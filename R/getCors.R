@@ -22,8 +22,6 @@ getCors <- function(inputMat, design, inputMatB = NULL, impute = FALSE, corrType
 	#check inputs
 	if(!corrType %in% c("pearson", "spearman")) stop("corrType should be one of \"pearson\" or \"spearman\".\n")
 
-	if(!class(inputMat) %in% c("data.frame", "matrix")) stop("Input data should be either data.frame or matrix.\n")
-
 	#check the design matrix
 	if(!mode(design) == "numeric") stop("Design matrix must be numeric.\n")
 
@@ -37,7 +35,6 @@ getCors <- function(inputMat, design, inputMatB = NULL, impute = FALSE, corrType
 		#check the correspondence between the input and design matrices
 		if(nrow(design) != ncol(inputMatB)) stop("The number of rows in the design matrix must be equal to the number of columns in the input matrix.")
 
-		if(!class(inputMatB) %in% c("data.frame", "matrix")) stop("Input data should be either data.frame or matrix.\n")
 	}
 
 	###################################

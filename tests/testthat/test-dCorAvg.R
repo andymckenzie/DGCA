@@ -10,7 +10,6 @@ test_that("differential correlation average works as expected", {
 
   ddcor_res_avg_gene = ddcorAll(inputMat = darmanis_test, design = design_mat, compare = c("oligodendrocyte", "neuron"), adjust = "perm", heatmapPlot = FALSE, nPerm = 5, nPairs = "all", getDCorAvg = TRUE, dCorAvgType = "gene_average", dCorAvgMethod = "median")
 
-  expect_equal(class(ddcor_res_avg_gene[[2]]$avgZDiff), "numeric")
   expect_equal(round(ddcor_res_avg_gene[[2]]$avgZDiff[1], 1), 0.9)
 
   ddcor_res_avg_gene = ddcorAll(inputMat = darmanis_test, design = design_mat, compare = c("oligodendrocyte", "neuron"), adjust = "perm", heatmapPlot = FALSE, nPerm = 5, nPairs = "all", getDCorAvg = TRUE, dCorAvgType = "total_average", dCorAvgMethod = "median")

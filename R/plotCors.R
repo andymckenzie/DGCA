@@ -35,8 +35,6 @@ plotCors <- function(inputMat, design, compare, corrType = "pearson",
 
   if(!corrType %in% c("pearson", "spearman")) stop("corrType should be one of \"pearson\" or \"spearman\".\n")
 
-  if(!class(inputMat) %in% c("data.frame", "matrix")) stop("Input data should be either data.frame or matrix.\n")
-
   #check the design matrix
   if(!mode(design) == "numeric") stop("Design matrix must be numeric.\n")
 
