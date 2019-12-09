@@ -1,0 +1,373 @@
+---
+title: "How to perform differential correlation analysis using DGCA"
+author: "Andrew McKenzie, Bin Zhang"
+date compiled: "`r Sys.Date()`"
+date: November 2, 2016
+output: 
+  rmarkdown::html_vignette: 
+    number_sections: yes
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{Extended DGCA Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+references:
+- id: darmanis2015
+  title: A survey of human brain transcriptome diversity at the single cell level
+  author:
+  - family: Darmanis
+  given: Spyros 
+  container-title: PNAS
+  volume: 112
+  URL: 'http://dx.doi.org/10.1073/pnas.1507125112'
+  DOI: 10.1073/pnas.1507125112
+  issue: 23
+  page: 7285–7290
+  type: article-journal
+  issued:
+    year: 2015
+    month: 6
+---
+
+#Introduction 
+
+DGCA (Differential Gene Correlation Analysis) is an R package to calculate, sort, visualize, and make sense of differential correlation patterns. Over the past several decades, a wealth of high-dimensional biological data types have emerged to allow the analysis of gene expression at a systems level, including microarray, RNA-seq, proteomics, epigenomics, metabolomics, lipidomics, and many others. An extremely common use of these data types is to gather and compare samples from multiple conditions, e.g., disease and non-diseased, in an attempt to identify molecular identifiers (e.g., probes, transcripts, genomic features, proteins, metabolites, lipids; henceforth, “genes”) that distinguish between the conditions. Currently, the most common method of comparing samples from different conditions is through statistical tests to identify genes that have higher relative levels in one condition than another, which is commonly known as differential expression analysis. However, methods have also emerged for gaining insights into the difference in the relationships between genes between conditions, which, in the case of expression data, is commonly known as differential co-expression or differential correlation analysis.  
+
+In this vignette we introduce DGCA, an R package to identify differential correlation between gene pairs in multiple conditions. DGCA shares some features with existing implementations for identifying differential correlation. For example, like DiffCorr, DGCA transforms sample correlation coefficients to z-scores and uses differences in z-scores to calculate p-values of differential correlation between gene pairs. And like Discordant, DGCA allows users the ability to classify differentially correlated gene pairs between two conditions into the nine possible categories. However, DGCA differs from existing differential correlation implementations in three key ways. First, DGCA allows users to generate permutation samples from their data, and thus offers users a non-parametric option for testing the significance of the differential correlation relationships they identify. Second, by harnessing these permutation samples, DGCA also allow users to test whether the average difference in correlation between one gene and a set of other genes is significantly different between two conditions. Third, DGCA offers users downstream options designed to help turn the differential correlation structure in their data into knowledge, including visualization and gene ontology (GO) enrichment analysis. This vignette shows the demonstrates the practical use of DGCA on single cell RNA-seq data comparing gene expression in neurons to oligodendrocytes, from Darmanis *et al.* [@darmanis2015]. 
+
+#Quick Analysis 
+
+First, we will load the package and read in some example data from single-cell RNA-sequencing data from neurons and oligodendrocytes, generated in Darmanis *et al.* [@darmanis2015], cleaned for this analysis, and put in the data folder. 
+
+```{r, results="hide", warning=FALSE, message=FALSE}
+library(DGCA, quietly = TRUE)
+data(darmanis)
+data(design_mat)
+```
+
+Note that the design matrix is a standard design matrix as used in other packages (e.g., limma, DESEq, MatrixEQTL), and specifies the group indices to be extracted from the original columns. 
+
+To run the full differential correlation analysis and extract all of the top differentially correlated pairs, run this: 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+ddcor_res = ddcorAll(inputMat = darmanis, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"),
+  adjust = "none", heatmapPlot = FALSE, nPerm = 0, nPairs = 100)
+head(ddcor_res)
+```
+
+To run the full differential correlation analysis to find the top differentially correlated pairs for one specific gene compared to all of the others, specify one gene for the "splitSet" argument. Here, we specify the gene "RTN4": 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+ddcor_res = ddcorAll(inputMat = darmanis, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"),
+  adjust = "none", heatmapPlot = FALSE, nPerm = 0, splitSet = "RTN4")
+head(ddcor_res)
+```
+
+The rest of this vignette will perform this full pipeline step-by-step and help you understand some of the different options available in DGCA. 
+
+#Step-by-step analysis 
+
+##Setting up the inputs to DGCA 
+
+The single-cell RNA-seq data used in this vignette and contained in the data frame oligo_neur derived from Darmanis *et al.* [@darmanis2015]. The cell types were identified on the basis of clustering of the gene expression measurements. The format of the data frame is in the standard format for an entry to DGCA, with identifiers for genes (such as gene names or microarray probe IDs) in the rows and sample names in the columns: 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+str(darmanis, list.len = 5)
+head(rownames(darmanis))
+```
+
+Our goal will be to identify differences in the correlations between two genes in the two different cell types (neurons and oligodendrocytes). 
+
+The design matrix is created based on data from a separate file that maps sample names to cell types. Using a vector of names corresponding to each of the columns in the overall matrix, we can create such a design matrix: 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+n_oligo_samples = 38; n_neuron_samples = 120 
+cell_type = c(rep("oligodendrocyte", n_oligo_samples), rep("neuron", n_neuron_samples))
+design_mat = model.matrix(~ cell_type + 0)
+colnames(design_mat) = c("neuron", "oligodendrocyte")
+str(design_mat)
+```
+
+Note that the design matrix orders conditions alphabetically by default, which can be confusing for initial users and cause errors. Therefore, you can also use the function design_mat to take a character vector such as cell_type and turn it into a model matrix: 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+design_mat = makeDesign(cell_type)
+```
+
+##Filtering the input genes 
+
+It is often the case that the genes with the lowest average expression levels, or the lowest variance in expression levels, are less likely to have interesting and/or biologically relevant differences in correlation between conditions. Therefore, it is sometimes desirable to filter the input expression matrix to remove these genes, both so that there are fewer spurious differential correlations in the resulting table, and so that the p-value adjustment for multiple comparisons (if any) will not be affected by these genes with a lower pre-test probability of differential correlation. 
+
+In order to filter the input data in this way, DGCA offers a convenient function called filterGenes. Although the Darmanis et al. RNA data has already been filtered to only include genes with expression levels in >= the 95th percentile in each of oligodendrocytes and neurons, we will show how to filter this data for the purposes of demonstration. 
+
+The first way that the input data can be filtered is by removing genes with a low average -- or more precisely, a low measure of central tendency. The default central tendency measure is the median, and the default percentile is the 30th percentile, although these can both be adjusted.
+
+Notably, most of the filtering methods (except for rowMeans) require the matrixStats library, so we load it here prior to filtering the genes. 
+
+```{r, message = FALSE, warning = FALSE}
+library(matrixStats, quietly = TRUE)
+nrow(darmanis)
+darmanis_mean_filtered = filterGenes(darmanis, 
+  filterTypes = "central", filterCentralType = "median", filterCentralPercentile = 0.3)
+nrow(darmanis_mean_filtered)
+```
+
+The second way that the input data can be filtered is by removing genes that have a low value in a dispersion measure. The default dispersion measure is the coefficient of variation, or CV, since this normalizes the dispersion of each gene to the mean and therefore makes the dispersion measure a more independent of the central tendency measure. 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+nrow(darmanis)
+darmanis_cv_filtered = filterGenes(darmanis, 
+  filterTypes = "dispersion", filterDispersionType = "cv", 
+  filterDispersionPercentile = 0.3)
+nrow(darmanis_cv_filtered)
+```
+
+It is also possible to do both mean and variance filtering in series, by setting  filterType to c("central", "dispersion"), and by setting sequential = TRUE (which is the default). Otherwise, if sequential = FALSE, the same genes removed by the central tendency filtering could potentially be removed by the dispersion filtering. 
+
+In general, some amount of central tendency and dispersion filtering is recommended for high-dimensional data sets, because low central tendency and/or low dispersion genes are unlikely to have interesting differential correlation, and this also allows the package operations to run substantially faster. 
+
+Note that this function can certainly be used even if the data will not be eventually loaded into DGCA -- it is present in the package merely for the convenience of our users. 
+
+##Finding the correlations and the significance of the correlations in each condition 
+
+When you input data to DGCA, the first thing that DGCA will do is to subset the input data into matrices based on the design matrix, +/- the splitSet of row identifiers. 
+
+The second thing that DGCA does is to find the correlation values in each condition, the number of non-NA samples used in each correlation calculation, and the significance of that correlation value. This behavior can be demonstrated via the use of the getCors function. 
+
+Since we know that the first 38 columns of our input data are from oligodendrocytes, then we can calculate the correlations for that condition only by first subsetting the data frame. 
+
+The major input to getCors are the same as the inputs for DGCA -- the input matrix and the design matrix. 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+cor_res = getCors(inputMat = darmanis, design = design_mat) 
+str(cor_res)
+```
+
+Note that the correlation method can be changed from Pearson correlation to Spearman correlation (i.e., rank-based correlation) via switching the corrType parameter from corrType = "pearson", the default, to corrType = "spearman". 
+
+Note also that the lowest p-value reportable using this method is 2.2e-16. Below this, the p-values of the correlation significance test will be reported as 0. 
+
+Finally, note that this result can have more than two conditions, based on the number of columns in the design matrix. It is only when you calculate the pairwise differential correlation between conditions as below that you must choose to compare two conditions. 
+
+##Finding the differential correlations between conditions
+
+Once you have the information necessary for each correlation matrix, this can be inputted into the function pairwiseDCor in order to calculate differential correlations between conditions. 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+dcPairs_res = pairwiseDCor(cor_res, compare = c("oligodendrocyte", "neuron"))
+str(dcPairs_res)
+```
+
+Note that this function returns a dcPair class object, which contains the correlations from each condition, the statistical significance of those correlations, and well as the difference of the z-transformed correlation values between the two conditions, and the p-value of the z-score difference. 
+
+##Extracting the top differentially correlated pairs from the dcPairs object
+
+In order to extract the top differentially correlated pairs from the dcPairs object, you can use accessor functions. One accessor function is dcTopPairs. The only required argument aside from the dcPairs object is the number of correlation pairs to have in the resulting table. By default, the correlation values will be classified into groups, although this can be changed by setting classify = FALSE. 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+dd_pairs = dcTopPairs(dcPairs_res, nPairs = 100, classify = TRUE)
+head(dd_pairs)
+```
+
+##Plotting the expression of gene pairs in multiple conditions 
+
+If you are interested in plotting the original expression values in multiple conditions (perhaps in order to visualize gene pairs with the top differential correlations between conditions), you can make use of ggplot2 to create scatterplots displaying this data.  
+
+```{r, fig.width = 7, fig.height = 5.5, message = FALSE, warning = FALSE}
+library(ggplot2, quietly = TRUE)
+#remove one outlier sample before visualization 
+darmanis = darmanis[ , -which.max(darmanis["COX6A1", ])]
+design_mat = design_mat[-which.max(darmanis["COX6A1", ]), ]
+plotCors(inputMat = darmanis, design = design_mat, compare = c("oligodendrocyte", "neuron"), geneA = "RTN4", geneB = "COX6A1")
+```
+
+##Adjusting the resulting p-values without permutation testing 
+
+DGCA offers a variety of options for adjusting the resulting differential correlation p-values without permutation testing, including base R methods from p.adjust and methods from the external package fdrtool. These are accessed during the extraction process of the table from the dcPairs class object, since the p-value adjustment will be different in the case that all of the top differentially correlated pairs are selected, as opposed to the case that only the differentially correlated pairs with respect to one gene are selected. Here, we show one of the most common p-value adjustment methods by setting adjust = "BH". Note that "BH" refers to Benjamini-Hochberg p-value adjustment. 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+dd_pairs = dcTopPairs(dcPairs_res, nPairs = 100, classify = TRUE, adjust = "BH")
+head(dd_pairs)
+```
+
+fdrtool is a separate R package that also allows for p-value adjustment, e.g. via controlling the false non-discovery rate, "fndr". To use these options, you need to load the package fdrtool. fdrtool also allows users to visualize the way in which the p-values were adjusted. This option is turned off by default but can be turned on using plotFdr = TRUE. 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+library(fdrtool, quietly = TRUE)
+dd_pairs_RTN4 = dcTopPairs(dcPairs_res, nPairs = 100, classify = TRUE, adjust = "fndr", plotFdr = FALSE) 
+head(dd_pairs_RTN4)
+```
+
+Note that this is a toy example and that if you're going to use fdrtool you should in general use larger input test statistics to generate more reliable FDR estimates. 
+
+##Adjusting the resulting p-values with permutation testing 
+
+In order to perform permutation testing, it is necessary to specify this at the beginning of the analysis, since the permutation samples will need to go through each of the steps for correlation and differential correlation calculation as well. Therefore, the way to perform permutation testing is to use the ddcorAll function. The p-values are converted to empirical p-values and then to q-values using methods adapted from the R package qvalue. 
+
+```{r, message = FALSE, warning = FALSE}
+data(darmanis)
+data(design_mat)
+ddcor_res_perm = ddcorAll(inputMat = darmanis, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"),
+  adjust = "perm", heatmapPlot = FALSE, nPerm = 10, splitSet = "RTN4")
+head(ddcor_res_perm)
+```
+
+You can set the number of permutations using the nPerm parameter. Note that you should also set adjust = "perm", because otherwise a different p-value adjustment method will be used, and the time spent generating the permutation samples will have been wasted. 
+
+Notably, DGCA uses a reference pool distribution (as opposed to local FDR calculation) and methods adapted from the qvalue R package in order to harness the permutation samples to generate p-values. 
+#Options for differential correlation calculation 
+
+##Spearman (rank-based) differential correlation analysis
+
+Often times it is desirable to use a non-parametric measure for correlation because of the distribution of your input data. In this case, you can use rank-based correlation in DGCA by setting corrType = "spearman". A downside to using this is that it is slower to calculate the correlation matrices.
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+ddcor_res = ddcorAll(inputMat = darmanis, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"),
+  adjust = "none", heatmapPlot = FALSE, nPerm = 0, corrType = "spearman", nPairs = 100)
+head(ddcor_res)
+```
+
+##Log transforming the input data to DGCA 
+
+Because of the highly skewed nature of microarray and RNA-sequencing data, it is often a good idea to log-transform input data prior to performing gene expression analysis on that data. Notably, if you do this, you will likely want to add a small constant to the input data set, because if there are negative or zero values prior to the log transform, NaN's will result that will cause a large proportion of the correlation values in one or both of the conditions to be NA, which will then propagate to the differential correlation difference in z-scores and corresponding p-value. Here is some example code to show you how to do this, using the natural logarithm of the data:
+
+```{r}
+darmanis_log = log(darmanis + 1)
+ddcor_res_RTN4 = ddcorAll(inputMat = darmanis_log, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"),
+  adjust = "none", heatmapPlot = FALSE, nPerm = 0, splitSet = "RTN4", nPairs = 525)
+head(ddcor_res_RTN4)
+```
+
+##Imputing gene expression measurements 
+
+Ocassionally, users may have NAs in their data, and DGCA offers a way to replace them using the k-nearest neighbors method from the impute package. If you want to run this, you need to have the impute library installed. 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+library(impute, quietly = TRUE)
+darmanis_na = darmanis
+darmanis_na["RTN4", 1] = NA #add an NA value to demonstrate
+ddcor_res = ddcorAll(inputMat = darmanis_na, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"),
+  adjust = "none", nPerm = 0, impute = TRUE)
+```
+
+Note that you can also run impute when identifying the differentially correlated genes with respect to a small group of genes, using the splitSet argument, as long as all of your columns have >80% of non-missing data for the full set of splitSet genes. Otherwise, the k-nearest neighbors algorithm will not work. If this is not the case for your data, you will need to find a different way around that missing data problem. For example, you could remove those columns prior to inputting them to DGCA.  
+
+##Classifying differential correlations into groups 
+
+The classify = TRUE argument is optional. If chosen, what it does is to split all of your rows into 9 classes, based on their differential connectivity: 
+
+1. **+/+** -- Positively correlation in both conditions A and B. 
+2. **+/0** -- Positive correlation in condition A, and no significant correlation in condition B. 
+3. **+/-** -- Positive correlation in condition A, and negative correlation in condition B. 
+4. **0/+** -- No significant correlation in condition A, and positive correlation in condition B. 
+5. **0/0** -- No significant correlation in either condition. 
+6. **0/-** -- No significant correlation in condition A, and negative correlation in condition B. 
+7. **-/+** -- Negative correlation in condition A, and positive correlation in condition B. 
+8. **-/0** -- Negative correlation in condition A, and no significant correlation in condition B. 
+9. **-/-** -- Negative correlation in both conditions A and B. 
+
+Genes will not be categorized into any of these categories unless they pass the overall significance threshold for differential correlation. The default value for this is 0.05, and it can be altered by setting the corSigThresh argument. Further, in order to change the value at which an individual correlation is called significant, you can alter the sigThresh argument, which by default is also 0.05. 
+
+##Specifying the correlation ceiling 
+
+The Fisher Z-transformation of the correlation values allows for a variance-stabilizing transformation of the correlation values, whose variance usually decreases as they approach -1 or 1. However, when you are testing many differentially correlated gene pairs, the Z-transformation will cause abberantly high correlation values, such as those 0.99+, to dominate the differential correlation calculations, even in the case that those two identifiers are highly correlated in the other condition as well. Therefore, correlation values of ~0.99+ are usually due to noise in the case of experiments with relatively small sample sizes, it is recommended that users use a ceiling on the correlation scores to avoid this skewing of the results. By default this threshold is set to 0.99, and it can be changed by altering the corr_cutoff argument. Note that the corr_cutoff parameter will alter the Z-score difference and the p-values corresponding to that difference, but will not alter the actual correlation value or its significance in the results tables. 
+
+##Gene-trait differential correlation analysis 
+
+Doing gene-trait differential correlation analysis is straightforward with DGCA, because you can combine the traits into the same matrix, and then treat the trait as the splitSet object which you use to calculate the correlations in both conditions. As an example of this, we read in the ages of the brain cell extracted from the cortex in the Darmanis et al. experiment, and find genes that have a significant change in correlation with age in oligodendrocytes as compared to neurons. 
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+data(ages_darmanis)
+rownames_darmanis = rownames(darmanis)
+darmanis_with_traits = rbind(ages_darmanis, darmanis)
+rownames(darmanis_with_traits) = c("age", rownames_darmanis)
+ddcor_res = ddcorAll(inputMat = darmanis_with_traits, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"),
+  adjust = "none", nPerm = 0, splitSet = "age")
+head(ddcor_res)
+```
+
+Note that you can test for differential correlation of multiple traits at the same time as well. Simply add each trait in as a row to the input matrix via cbind, add the names of these traits is as row names to the input matrix, and then specify the character vector of trait names as the splitSet argument to DGCA 
+
+#Dissecting the differential correlation structure 
+
+##Visualization via heatmap of correlations in each condition  
+
+In order to visualize the differential correlation structure, DGCA offers a heatmap function. To turn it on, set the heatmapPlot argument to TRUE within ddcorAll. This requires the function heatmap.2 from the library gplots. Note that you can specify additional plotting options to the heatmap.2 at the end of the ddcorAll function.
+
+Since heatmaps are best visualized with a small number of genes, we first filter the genes down to a more manageable number by selecting the genes with the highest medians and coefficients of variation.  
+
+Note that if you want to alter the text size in the heatmap, you can set the cexRow and cexCol arguments, as indicated above.  
+
+```{r, fig.width = 7, fig.height = 7, message = FALSE, warning = FALSE}
+library(gplots, quietly = TRUE)
+darmanis_top =  filterGenes(darmanis, 
+  filterTypes = c("central", "dispersion"), filterCentralPercentile = 0.75, 
+  filterDispersionPercentile = 0.75)
+ddcor_res = ddcorAll(inputMat = darmanis_top, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"),
+  adjust = "none", heatmapPlot = TRUE, nPerm = 0, nPairs = "all")
+```
+
+In the resulting heatmap, the correlations in condition A (oligodendrocytes in this example) are plotted in the lower left, while the correlations in condition B (neurons in this example) are in the upper right. The diagonals of the matrix have correlation values set to 0. 
+
+As you can see, DGCA sorts the rows of the correlation matrices by the average z-score of correlation difference, so that you can visualize patterns of differences in correlation across the two conditions and help identify key genes that are more or less correlated with all of the other genes in one condition versus another. In this example, the gene *GPM6B* has relatively stronger correlation with the other genes in the set in oligodendrocytes than in neurons, while the gene *ARL6IP1* has relatively stronger correlation with the other genes in the set in neurons than in oligodendrocytes. 
+
+##Calculating the average change in correlation for each gene with all others 
+
+In order to quantify the average gain or loss of correlation of each gene in the data set with all others, we can calculate the average (median or arithmetic mean) differential correlation z-score difference for each gene by setting getDCorAvg = TRUE and dCorAvgType = "gene_average". To select the average type, use dCorAvgMethod = "median" or dCorAvgMethod = "mean". Selecting these options causes ddcorAll to return a list of two data frames instead of a single data frame. So, you will then need to extract the second data frame, which contains the difference in median z-scores and the local false discovery rate for each gene. Notably, in calculating the median for each gene in this function, DGCA makes use of the matrixStats library. Also, you must use permutation samples by setting nPerm > 0 in order for this option of ddcorAll to work, otherwise ddcorAll will return an error. 
+
+```{r, warning=FALSE, message=FALSE}
+library(matrixStats)
+ddcor_res = ddcorAll(inputMat = darmanis_top, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"),
+  adjust = "perm", heatmapPlot = FALSE, nPerm = 20, nPairs = "all",
+  getDCorAvg = TRUE, dCorAvgType = "gene_average", dCorAvgMethod = "median")
+head(ddcor_res$avg_dcor)
+```
+
+##Calculating the average change in correlation for all genes with all genes
+
+It is also possible to calculate the average change in correlation between two conditions across all gene pairs in DGCA. In order to do this, set dCorAvgType = "total_average". This calculates the average (median or mean) difference in z scores between the original conditions and compares it to differences in z-scores in the permuted conditions. The result is a list of two numbers, the total_zdiff, corresponding to the difference in the average of z-scores between all gene pairs in the original and permuted conditions, and total_fdr, corresponding to the calculated false discovery rate of this permuted median difference in z-scores. 
+
+```{r, warning=FALSE, message=FALSE}
+library(matrixStats)
+ddcor_res = ddcorAll(inputMat = darmanis_top, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"),
+  adjust = "perm", heatmapPlot = FALSE, nPerm = 20, nPairs = "all",
+  getDCorAvg = TRUE, dCorAvgType = "total_average", dCorAvgMethod = "median")
+head(ddcor_res$avg_dcor)
+```
+
+#Gene ontology enrichment analysis of differentially correlated gene classes using GOstats
+
+Commonly, investigators are more interested in the overall pattern of genes with changes in correlation between conditions, rather than the differential correlation of individual gene pairs. In this case, DGCA offers a convenience function for extracting gene lists corresponding to the differential correlation classes, converting the resulting gene symbols to inputs for gene ontology enrichment testing, and integrating with the GOstats R package to return the gene ontology enrichment testing results. If you want to use this convenience function, you need to have the GOstats library installed. So far, this convenience function is only tested for use with a single gene splitSet analysis. 
+
+In order to run this function, we need to load the necessary libraries. Of course, since we are using Since this experiment has human gene symbols, we use the annotation library org.Hs.eg.db. We also choose clean them to make sure that that they are the most updated gene symbol versions, where possible, for which we need the HGNChelper R package. If you do not want to clean your HGNC gene symbols prior to converting to Ensembl gene symbols, set HGNC_clean = FALSE. If you already have Ensembl symbols and do not need to convert from HGNC symbols to Ensembl, set HGNC_switch = FALSE. By default, these two options are set to TRUE, since in our experience, HGNC symbols are more commonly encountered than Ensembl symbols. 
+
+```{r, message = FALSE, warning = FALSE}
+library(GOstats, quietly = TRUE)
+library(HGNChelper, quietly = TRUE)
+library(org.Hs.eg.db, quietly = TRUE)
+ddcor_res_APP = ddcorAll(inputMat = darmanis, design = design_mat,
+  compare = c("oligodendrocyte", "neuron"),
+  adjust = "none", heatmapPlot = FALSE, nPerm = 0, splitSet = "APP")
+ddcorGO_res = ddcorGO(ddcor_res_APP, universe = rownames(darmanis), 
+  gene_ontology = "all", HGNC_clean = TRUE, HGNC_switch = TRUE, annotation = "org.Hs.eg.db", calculateVariance = TRUE)
+str(ddcorGO_res)
+```
+
+You can also run this function with the input groups to the gene ontology analysis as all of the classes, instead of just split into positive and negative z-scores, by setting the classes = TRUE argument in the ddcorGO function. Note that if you run it with the classes = TRUE, then the pval_gene_thresh argument in ddcorGO should be no more lenient than that of sigThresh in DGCA, or you will end up classifying genes as having correlation class "0/0", and performing gene ontology enrichment analysis with them in that class, even when they should not be in that differential correlation class. 
+
+#Debugging 
+
+* A common problem in R programming is of strings being converted to factors in data frame creation. We typically set options(stringsAsFactors = FALSE). In general, DGCA is designed to work regardless of this setting (and not to switch the user's options). However, if you are encountering a problem in running DGCA, it may be worth checking whether setting options(stringsAsFactors = FALSE) fixes it. 
+* If you have some genes with no expression values in either condition, this will cause the correlation to be NA. This can cause problems in interpreting the resulting q-values if you are using permutation tests, and therefore it is recommended that such genes be removed prior to performing DGCA analyses. Since their correlation is NA, they would not be interpretable from the perspective of finding a difference in correlation between conditions.  
+
+#References
