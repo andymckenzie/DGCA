@@ -1,0 +1,150 @@
+---
+title: "How to perform module-based differential correlation analysis and GO enrichment using DGCA"
+author: "Andrew McKenzie, Bin Zhang"
+date compiled: "`r Sys.Date()`"
+date: Oct 24, 2016
+output: 
+  pdf_document: 
+    number_sections: yes
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{DGCA Vignette on Modules}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+references:
+- id: darmanis2015
+  title: A survey of human brain transcriptome diversity at the single cell level
+  author:
+  - family: Darmanis
+  given: Spyros 
+  container-title: PNAS
+  volume: 112
+  URL: 'http://dx.doi.org/10.1073/pnas.1507125112'
+  DOI: 10.1073/pnas.1507125112
+  issue: 23
+  page: 7285–7290
+  type: article-journal
+  issued:
+    year: 2015
+    month: 6
+---
+
+#Introduction 
+
+This vignette shows how to perform module-based differential correlation analysis, module-based GO enrichment, and differential correlation module detection from DGCA results through integration with MEGENA. To learn how to perform the differential correlation pipeline step-by-step, as well as explore some of the different options available in DGCA, please see the extended vignette. 
+
+#Data loading and module construction 
+
+First, we will load the package and read in example data from single-cell RNA-sequencing data from neurons and oligodendrocytes, generated in Darmanis *et al.* [@darmanis2015], cleaned for this analysis, and put in the data folder. 
+
+```{r, results="hide", warning=FALSE, message=FALSE}
+library(DGCA, quietly = TRUE)
+data(darmanis)
+data(design_mat)
+```
+
+We will now construct toy modules for this data set. However, these modules could also be constructed by a complementary module-detection method, such as WGCNA or MEGENA. 
+
+```{r, warning=FALSE, message=FALSE}
+module_genes = list(
+  mod1 = rownames(darmanis)[1:100], 
+  mod2 = rownames(darmanis)[90:190], 
+  mod3 = rownames(darmanis)[190:290],
+  mod4 = rownames(darmanis)[330:340], 
+  mod5 = rownames(darmanis)[350:360],
+  mod6 = rownames(darmanis)[400:405])
+modules = stack(module_genes)
+modules$ind = as.character(modules$ind)
+str(modules)
+head(modules)
+```
+
+Note that the genes in these modules are partially overlapping; this is allowed in the subsequent analyses, although not required. 
+
+#Module-based differential correlation 
+
+Having an expression matrix, a design matrix, and a set of modules allows us to perform module-based differential correlation analysis. This analysis finds the average (median or mean) change in correlation between gene symbols in the two conditions, the significance of that change in correlation, as well as the top genes with a gain and/or loss in correlation with the other genes in the module between the conditions, if any of them are significant. 
+
+```{r, message = FALSE, warning = FALSE}
+moduleDC_res = moduleDC(inputMat = darmanis, design = design_mat, 
+                        compare = c("oligodendrocyte", "neuron"), genes = modules$values, 
+                        labels = modules$ind, nPerm = 50, number_DC_genes = 3, 
+                        dCorAvgMethod = "median")
+head(moduleDC_res)
+```
+
+It is also possible to take one module and measure differential correlation strength for each of its genes compared to all of the others in the module: 
+
+```{r, message = FALSE, warning = FALSE}
+mod1_genes = modules[modules$ind == "mod1", "values"]
+darmanis_mod1 = darmanis[mod1_genes, ]
+moduleDC_res = ddcorAll(inputMat = darmanis_mod1, design = design_mat, 
+                        compare = c("oligodendrocyte", "neuron"), nPerm = 50, 
+                        getDCorAvg = TRUE, dCorAvgType = "gene_average", 
+                        dCorAvgMethod = "median")
+head(moduleDC_res[["avg_dcor"]])
+tail(moduleDC_res[["avg_dcor"]])
+```
+
+#Module-based gene ontology (GO) enrichment 
+
+This function returns a list for each module, containing a list of data frames for the enrichment of all of the terms in each of the GO categories chosen (each of BP, MF, and CC for the default of "all"). Notably, if you want to extract all of the categories regardless of the p-values, which is helpful for downstream applications that compare across groups, you should set pval_GO_cutoff = 1 (the default value). If you only want to extract the GO terms with significant p-values (unadjusted), you can make this number lower. 
+ 
+```{r, message = FALSE, warning = FALSE}
+library(GOstats, quietly = TRUE)
+library(HGNChelper, quietly = TRUE)
+library(org.Hs.eg.db, quietly = TRUE)
+moduleGO_res = moduleGO(genes = modules$values, labels = modules$ind, 
+                        universe = rownames(darmanis), pval_GO_cutoff = 1)
+```
+
+In order to extract information from this, DGCA contains a function to convert this result into a data frame: 
+
+```{r, message = FALSE, warning = FALSE}
+moduleGO_df = extractModuleGO(moduleGO_res)
+```
+
+Next, this data frame can be inputted into a heatmap plotting function in order to visualize the top GO term enrichments in each group groups. Note that this requires the ggplot2 R package. 
+
+```{r, fig.width = 8, fig.height = 7, message = FALSE, warning = FALSE}
+library(ggplot2, quietly = TRUE)
+plotModuleGO(moduleGO_df, nTerms = 4, text_size = 8, coord_flip = TRUE)
+```
+
+#Differential correlation module detection through integration with MEGENA 
+
+Given results from a DGCA differential correlation analysis, it is also possible to identify modules using MEGENA. For demonstration purposes, we identified 
+
+```{r, fig.width = 8, fig.height = 7, message = FALSE, warning = FALSE}
+library(MEGENA, quietly = TRUE)
+ddcor_res = ddcorAll(inputMat = darmanis, design = design_mat,
+	compare = c("oligodendrocyte", "neuron"), 
+	adjust = "none", heatmapPlot = FALSE, nPerm = 0, nPairs = "all")
+str(ddcor_res)
+```
+
+Using the DGCA results without adjustments for multiple hypothesis tests (adjusted = FALSE), DGCA offers a convenience function for integrating with MEGENA. This function will extract the gene pairs less than a certain p-value, construct a prefuse force network using those gene pairs, detect modules in that prefuse force network, and calculate hub genes within those modules. By default, the MEGENA integration function evaluates its detected modules by their compactness. Note also that if you do not want MEGENA to report its computations, then you need to use suppressMessages() around it. 
+
+```{r, fig.width = 8, fig.height = 7, message = FALSE, warning = FALSE, results = "hide"}
+megena_res = ddMEGENA(ddcor_res, adjusted = FALSE, evalCompactness = TRUE)
+```
+
+```{r, fig.width = 8, fig.height = 7, message = FALSE, warning = FALSE}
+str(megena_res$modules)
+head(megena_res$modules)
+```
+
+However, in many cases (such as when average module size is small), using the compactness evaluation may lead to problems in MEGENA. If so, it may be advisable to turn off the module compactness evaluation step. 
+
+```{r, fig.width = 8, fig.height = 7, message = FALSE, warning = FALSE, results = "hide"}
+megena_res = ddMEGENA(ddcor_res, adjusted = FALSE, evalCompactness = FALSE)
+```
+
+```{r, fig.width = 8, fig.height = 7, message = FALSE, warning = FALSE}
+str(megena_res$modules)
+head(megena_res$modules)
+```
+
+For more options in integrating DGCA with MEGENA, please see help(MEGENA) and browse its associated vignette. 
+
+#References 
