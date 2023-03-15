@@ -12,7 +12,7 @@ Description: Performs differential correlation analysis on input
     genomics data as well, in addition to being potentially applicable to data from
     other fields entirely. It is described more fully in the manuscript
     introducing it, freely available at <doi:10.1186/s12918-016-0349-1>.
-Version: 1.0.2
+Version: 1.0.3
 Author: Bin Zhang [aut],
     Andrew McKenzie [aut, cre]
 Maintainer: Andrew McKenzie <amckenz@gmail.com>
