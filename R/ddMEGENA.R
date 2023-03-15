@@ -22,7 +22,7 @@ ddMEGENA <- function(ddcor_res, adjusted = TRUE, pval_gene_thresh = 0.05,
 
   ##############################
 	#set SAF to FALSE while restoring to default when the function is finished
-	SAF = getOption("stringsAsFactors")
+	SAF = getOption("stringsAsFactors", FALSE)
 	on.exit(options(stringsAsFactors = SAF))
 	options(stringsAsFactors = FALSE)
 

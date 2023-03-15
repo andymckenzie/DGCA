@@ -17,7 +17,7 @@ dcTopPairs <- function(dcObject, nPairs, adjust = "none", plotFdr = FALSE,
 	classify = TRUE, sigThresh = 1, corSigThresh = 0.05, zScorePerm = NULL,
 	verbose = FALSE, compare = NULL, secondMat = FALSE) {
 
-	SAF = getOption("stringsAsFactors")
+	SAF = getOption("stringsAsFactors", FALSE)
 	on.exit(options(stringsAsFactors = SAF))
 	options(stringsAsFactors = FALSE)
 

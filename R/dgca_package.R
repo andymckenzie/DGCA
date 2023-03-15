@@ -5,7 +5,7 @@
 #' 2) Functions to calculate differential correlations between regions, which in the current package can only be pairwise (i.e., one condition vs another).
 #' 3) Functions to extract, sort information about the differential correlation calculations in a convenient format.
 #' The first two functions comprise the discovery of differential correlation (ddcor) portion of the package, which is why the names of the functions and object names often begin with ddcor.
-#' Note that DGCA makes use of the 	SAF = getOption("stringsAsFactors"); on.exit(options(stringsAsFactors = SAF)); options(stringsAsFactors = FALSE) design pattern many times in order to avoid errors related to stringsAsFactors in porting code to new environments. This should not affect the stringsAsFactors options in your environment; however, you may want to be aware of this.
+#' Note that DGCA makes use of the 	SAF = getOption("stringsAsFactors", FALSE); on.exit(options(stringsAsFactors = SAF)); options(stringsAsFactors = FALSE) design pattern many times in order to avoid errors related to stringsAsFactors in porting code to new environments. This should not affect the stringsAsFactors options in your environment; however, you may want to be aware of this.
 #'
 #' @docType package
 #' @name DGCA

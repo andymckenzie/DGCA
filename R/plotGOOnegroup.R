@@ -21,7 +21,7 @@ plotGOOneGroup <- function(dfList, nTerms = 5, minSize = 50, maxSize = 500, data
 
   ##############################
   #set SAF to FALSE while restoring to default when the function is finished
-  SAF = getOption("stringsAsFactors")
+  SAF = getOption("stringsAsFactors", FALSE)
   on.exit(options(stringsAsFactors = SAF))
   options(stringsAsFactors = FALSE)
 

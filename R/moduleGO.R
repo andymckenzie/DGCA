@@ -31,7 +31,7 @@ moduleGO <- function(genes, labels, universe, HGNC_clean = TRUE, HGNC_switch = T
 
   ##############################
   #set SAF to FALSE while restoring to default when the function is finished
-  SAF = getOption("stringsAsFactors")
+  SAF = getOption("stringsAsFactors", FALSE)
   on.exit(options(stringsAsFactors = SAF))
   options(stringsAsFactors = FALSE)
 

@@ -11,7 +11,7 @@
 pairwiseDCor <- function(corMatsObj, compare, corr_cutoff = 0.99, corrType = "pearson",
 	secondMat = FALSE, signType = "none"){
 
-	SAF = getOption("stringsAsFactors")
+	SAF = getOption("stringsAsFactors", FALSE)
 	on.exit(options(stringsAsFactors = SAF))
 	options(stringsAsFactors = FALSE)
 
