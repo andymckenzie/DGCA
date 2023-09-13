@@ -1,4 +1,3 @@
-[![Travis-CI Build Status](https://travis-ci.org/andymckenzie/DGCA.svg?branch=master)](https://travis-ci.org/andymckenzie/DGCA)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ggplot2)](https://cran.r-project.org/package=DGCA)
 [![Downloads](https://cranlogs.r-pkg.org:443/badges/grand-total/DGCA)](https://cranlogs.r-pkg.org:443/badges/grand-total/DGCA)
 
