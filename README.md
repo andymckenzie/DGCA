@@ -27,7 +27,7 @@ remotes::install_github("andymckenzie/DGCA")
 # devtools::install_github("andymckenzie/DGCA")
 ```
 
-Before installing DGCA, you need to install WGCNA and several Bioconductor packages if you have not yet: 
+Before installing DGCA, you need to install WGCNA if you have not yet, which requires several Bioconductor packages: 
 
 Install BiocManager:
 
@@ -41,6 +41,8 @@ Install required Bioconductor packages:
 ```R
 BiocManager::install(c("GO.db", "AnnotationDbi", "impute", "preprocessCore"))
 ```
+
+Install WGCNA: 
 
 ```R
 install.packages("WGCNA")
