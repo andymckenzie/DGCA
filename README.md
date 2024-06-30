@@ -11,18 +11,42 @@ It also has several other options including calculating the average differential
 
 ## Installation
 
-You can install DGCA from CRAN with:
+**Note:** DGCA is currently not available on CRAN due to a package dependency issue. We are working to resolve this and get it back on CRAN as soon as possible.
+
+In the meantime, you can install the development version of DGCA from GitHub:
 
 ```R
-install.packages("DGCA")
-```
+# Install remotes if you haven't already
+install.packages("remotes")
 
-You can install the development version of DGCA from github with:
+# Install DGCA
+remotes::install_github("andymckenzie/DGCA")
 
-```R
+# Alternatively, if you prefer using devtools:
 # install.packages("devtools")
-devtools::install_github("andymckenzie/DGCA")
+# devtools::install_github("andymckenzie/DGCA")
 ```
+
+Before installing DGCA, you need to install WGCNA and several Bioconductor packages if you have not yet: 
+
+Install BiocManager:
+
+```R
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+```
+
+Install required Bioconductor packages:
+
+```R
+BiocManager::install(c("GO.db", "AnnotationDbi", "impute", "preprocessCore"))
+```
+
+```R
+install.packages("WGCNA")
+```
+
+After installing these dependencies, you can proceed then with installing DGCA as shown above.
 
 ## Basic Example
 
